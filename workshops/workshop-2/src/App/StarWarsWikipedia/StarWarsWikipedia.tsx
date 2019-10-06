@@ -13,97 +13,73 @@ interface State {
   activeResource?: Resources;
 }
 
-interface Props {
-  pollResources: boolean;
-}
+interface Props {}
 
 const RESOURCE_POLLING_INTERVAL = 3000;
 
-class StarWarsWikipedia extends React.Component<Props, State> {
-  refreshIntervalId?: number;
+function StarWarsWikipedia(props: Props) {
+  const refreshIntervalId = React.useRef<number>();
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [pollResources, setPollResources] = React.useState<boolean>(false);
+  const [resources, setResources] = React.useState<ResourcesData>();
+  const [activeResource, setActiveResource] = React.useState<Resources>();
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      loading: true,
-      pollResources: props.pollResources
-    };
-
-    this.togglePollingResources = this.togglePollingResources.bind(this);
-    this.getResources = this.getResources.bind(this);
-  }
-
-  componentDidMount() {
-    this.getResources();
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    // Problem: props.pollResources and state.pollResources need to be synced in componentDidUpdate
-    // if (this.props.pollResources !== prevProps.pollResources) {
-    //   this.setState({
-    //     pollResources: this.props.pollResources
-    //   });
-    // }
-
-    if (this.state.pollResources !== prevState.pollResources) {
-      if (this.state.pollResources) {
-        this.startPollingResources();
-      } else {
-        this.stopPollingResources();
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    // Problem: Memory leak, forgot to cancel async operations such as interval before unmount
-    // this.stopPollingResources();
-  }
-
-  getResources() {
+  const getResources = React.useCallback(() => {
     console.log("Get resources");
 
-    this.setState({ loading: true });
+    setLoading(true);
 
     return api.getResources((data: ResourcesData) => {
-      this.setState(state => ({
-        loading: false,
-        resources: data,
-        activeResource:
-          state.activeResource || (Object.keys(data)[0] as Resources)
-      }));
+      setLoading(false);
+      setResources(data);
     });
+  }, []);
+
+  React.useEffect(() => {
+    if (resources) {
+      setActiveResource(
+        activeResource || (Object.keys(resources)[0] as Resources)
+      );
+    }
+  }, [activeResource, resources]);
+
+  React.useEffect(() => {
+    getResources();
+  }, [getResources]);
+
+  React.useEffect(() => {
+    function startPollingResources() {
+      clearInterval(refreshIntervalId.current);
+      refreshIntervalId.current = setInterval(
+        getResources,
+        RESOURCE_POLLING_INTERVAL
+      );
+
+      console.log(
+        `Polling resources every ${RESOURCE_POLLING_INTERVAL}ms started`
+      );
+    }
+
+    function stopPollingResources() {
+      clearInterval(refreshIntervalId.current);
+      refreshIntervalId.current = undefined;
+
+      console.log("Polling resources stopped");
+    }
+
+    if (pollResources) {
+      startPollingResources();
+    }
+
+    return stopPollingResources;
+  }, [getResources, pollResources]);
+
+  function togglePollingResources() {
+    setPollResources(state => !state);
   }
 
-  stopPollingResources() {
-    clearInterval(this.refreshIntervalId);
-    this.refreshIntervalId = undefined;
-
-    console.log("Polling resources stopped");
-  }
-
-  startPollingResources() {
-    clearInterval(this.refreshIntervalId);
-    this.refreshIntervalId = setInterval(
-      this.getResources,
-      RESOURCE_POLLING_INTERVAL
-    );
-
-    console.log(
-      `Polling resources every ${RESOURCE_POLLING_INTERVAL}ms started`
-    );
-  }
-
-  togglePollingResources() {
-    this.setState(state => ({
-      pollResources: !state.pollResources
-    }));
-  }
-
-  renderActiveResource() {
+  function renderActiveResource() {
     // Problem: Render method should be refactor to separate component
-    const { activeResource } = this.state;
-
     switch (activeResource) {
       case Resources.people: {
         return <People />;
@@ -118,10 +94,8 @@ class StarWarsWikipedia extends React.Component<Props, State> {
     }
   }
 
-  renderResources() {
+  function renderResources() {
     // Problem: Render method should be refactor to separate component
-    const { resources, activeResource } = this.state;
-
     if (resources && Object.keys(resources).length > 0) {
       return (
         <>
@@ -133,11 +107,7 @@ class StarWarsWikipedia extends React.Component<Props, State> {
                   activeResource === resourceKey && styles.ActiveResource
                 )}
                 key={resourceKey}
-                onClick={() =>
-                  this.setState({
-                    activeResource: resourceKey as Resources
-                  })
-                }
+                onClick={() => setActiveResource(resourceKey as Resources)}
               >
                 <span className={styles.ResourceName}>
                   {String(resourceKey)}
@@ -145,7 +115,7 @@ class StarWarsWikipedia extends React.Component<Props, State> {
               </li>
             ))}
           </ul>
-          {this.renderActiveResource()}
+          {renderActiveResource()}
         </>
       );
     }
@@ -153,23 +123,17 @@ class StarWarsWikipedia extends React.Component<Props, State> {
     return <strong>No resources found.</strong>;
   }
 
-  render() {
-    const { loading, resources, pollResources } = this.state;
-
-    return (
-      <section className={styles.Root}>
-        <header className={styles.Header}>
-          <h1>Star Wars Wikipedia</h1>
-          <button onClick={this.togglePollingResources}>
-            {pollResources
-              ? "Pause refresh resources"
-              : "Auto refresh resources"}
-          </button>
-        </header>
-        {!resources && loading ? "Loading ..." : this.renderResources()}
-      </section>
-    );
-  }
+  return (
+    <section className={styles.Root}>
+      <header className={styles.Header}>
+        <h1>Star Wars Wikipedia</h1>
+        <button onClick={togglePollingResources}>
+          {pollResources ? "Pause refresh resources" : "Auto refresh resources"}
+        </button>
+      </header>
+      {!resources && loading ? "Loading ..." : renderResources()}
+    </section>
+  );
 }
 
 export default StarWarsWikipedia;
