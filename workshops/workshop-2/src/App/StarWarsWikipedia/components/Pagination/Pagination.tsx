@@ -25,7 +25,7 @@ export default function Pagination({
   const paginationMarkup = (
     <div className={styles.Root}>
       <span className={styles.Description}>
-        {`Total people ${count}, Page ${page}, Result ${(page - 1) *
+        {`Total records ${count}, Page ${page}, Result ${(page - 1) *
           RECORDS_PER_PAGE +
           1} - ${RECORDS_PER_PAGE * page}`}
       </span>

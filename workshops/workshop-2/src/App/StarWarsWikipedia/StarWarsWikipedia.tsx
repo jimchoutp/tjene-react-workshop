@@ -4,6 +4,7 @@ import classNames from "classnames";
 import api from "./api/swapi-wrapper";
 import { Resources, ResourcesData } from "./api/types";
 import { People } from "./components";
+import { useIsMounted } from "./hooks";
 import styles from "./StarWarsWikipedia.module.css";
 
 interface State {
@@ -18,6 +19,7 @@ interface Props {}
 const RESOURCE_POLLING_INTERVAL = 3000;
 
 function StarWarsWikipedia(props: Props) {
+  const mounted = useIsMounted();
   const refreshIntervalId = React.useRef<number>();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [pollResources, setPollResources] = React.useState<boolean>(false);
@@ -30,10 +32,14 @@ function StarWarsWikipedia(props: Props) {
     setLoading(true);
 
     return api.getResources((data: ResourcesData) => {
+      if (!mounted.current) {
+        return;
+      }
+
       setLoading(false);
       setResources(data);
     });
-  }, []);
+  }, [mounted]);
 
   React.useEffect(() => {
     if (resources) {
@@ -48,8 +54,7 @@ function StarWarsWikipedia(props: Props) {
   }, [getResources]);
 
   React.useEffect(() => {
-    function startPollingResources() {
-      clearInterval(refreshIntervalId.current);
+    if (pollResources) {
       refreshIntervalId.current = setInterval(
         getResources,
         RESOURCE_POLLING_INTERVAL
@@ -60,18 +65,12 @@ function StarWarsWikipedia(props: Props) {
       );
     }
 
-    function stopPollingResources() {
+    return () => {
       clearInterval(refreshIntervalId.current);
       refreshIntervalId.current = undefined;
 
       console.log("Polling resources stopped");
-    }
-
-    if (pollResources) {
-      startPollingResources();
-    }
-
-    return stopPollingResources;
+    };
   }, [getResources, pollResources]);
 
   function togglePollingResources() {

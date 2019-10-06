@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useIsMounted } from "../../hooks";
 import api from "../../api/swapi-wrapper";
 import { DataWithPagination, People as PeopleType } from "../../api/types";
 import { Person } from "./components";
@@ -7,6 +8,7 @@ import Pagination from "../Pagination";
 import styles from "./People.module.css";
 
 export default function People() {
+  const isMounted = useIsMounted();
   const [data, setData] = React.useState<DataWithPagination<PeopleType>>();
   const [page, setPage] = React.useState<number>(1);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -14,10 +16,12 @@ export default function People() {
   React.useEffect(() => {
     setLoading(true);
     api.getPeople({ page }, (people: DataWithPagination<PeopleType>) => {
-      setData(people);
-      setLoading(false);
+      if (isMounted.current) {
+        setData(people);
+        setLoading(false);
+      }
     });
-  }, [page]);
+  }, [isMounted, page]);
 
   if (!data) {
     return (
