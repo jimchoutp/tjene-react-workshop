@@ -1,0 +1,47 @@
+.Root {
+  height: 100%;
+  width: 100%;
+  font-family: helvetica neue, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Header {
+  text-align: center;
+  margin: 2rem 0;
+  padding: 0;
+  letter-spacing: 1px;
+  color: yellow;
+}
+
+.Resources {
+  position: sticky;
+  top: 0;
+  display: flex;
+  list-style: none;
+  padding: 8px;
+  margin: 0;
+  margin-bottom: 2rem;
+  background-color: #272b30;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.Resource {
+  margin: 0 1rem;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  display: inline-flex;
+}
+
+.ActiveResource {
+  background: red;
+}
+
+.ResourceName::first-letter {
+  text-transform: uppercase;
+}

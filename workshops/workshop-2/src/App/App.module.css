@@ -1,0 +1,19 @@
+.DevTool {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: white;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.DevTool > * {
+  margin: 0 8px;
+}
+
+.DevTool h1 {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
