@@ -1,0 +1,14 @@
+.Root {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  word-break: break-all;
+}
+
+.Description {
+  margin-right: 1rem;
+}
+
+.Root button {
+  margin: 0 5px;
+}
