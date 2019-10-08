@@ -16,8 +16,8 @@ You can follow along with branches and commits
 
 ```shell
 git clone git@github.com:jimchoutp/tjene-react-workshop.git
+git checkout <branch>
 npm install
-git checkout workshop-2-class-components
 npm start
 ```
 
