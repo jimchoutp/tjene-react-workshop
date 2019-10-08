@@ -1,13 +1,26 @@
 # React Workshop 2
 
-1. Demonstrate some discouraged patterns in the class component branch and refactor them to have better maintainabilty and scalability.
+1. Demonstrate some discouraged patterns in the class component branch and refactor them to have better maintainability and scalability.
 
 2. Refactor class components to function components with hooks. (Class components are fine, but react [encourages](https://reactjs.org/docs/hooks-intro.html#motivation) usage of function components)
 
-## Branches 
+## Branches
+
 You can follow along with branches and commits
+
 - workshop-2-class-components
+
 - workshop-2-refactor-class-to-function-components
+
+## Setup
+
+```shell
+git clone git@github.com:jimchoutp/tjene-react-workshop.git
+npm install
+git checkout workshop-2-class-components
+npm start
+```
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
