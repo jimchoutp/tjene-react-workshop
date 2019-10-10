@@ -2,7 +2,7 @@
 
 1. React fundamentals
 
-   - [Official documentations](https://reactjs.org/docs) (Recommanded reading)
+   - [Official documentations](https://reactjs.org/docs) (Recommended reading)
    - [JSX, syntax extension to JavaScript](https://reactjs.org/docs/jsx-in-depth.html)
 
    ```js
@@ -24,17 +24,17 @@
    ```
 
    - [Lifecycle](https://reactjs.org/docs/state-and-lifecycle.html)
-     ![](images/lifecycle.png)
-     [Illustraion by Dan Abramov](https://twitter.com/dan_abramov/status/981712092611989509?lang=en)
+     ![react life cycle](images/lifecycle.png)
+     [Illustration by Dan Abramov](https://twitter.com/dan_abramov/status/981712092611989509?lang=en)
 
      ```
-     render → reconcilitation → commit
+     render → reconciliation → commit
           ↖                       ↙
                state change
      ```
 
      - Render (Create element)
-     - [Reconcilitation](https://reactjs.org/docs/reconciliation.html) (Compare elements with previous render)
+     - [Reconciliation](https://reactjs.org/docs/reconciliation.html) (Compare elements with previous render)
      - Commit (Update the DOM if needed)
 
    - [Uncontrolled VS. Controlled component](https://goshakkk.name/controlled-vs-uncontrolled-inputs-react/)
@@ -78,8 +78,10 @@
    - [Context demo](https://codesandbox.io/s/inspiring-rgb-g5w1d?fontsize=14)
 
 5. Render
+
    - [Simple Tip to optimize re-rendering](https://kentcdodds.com/blog/optimize-react-re-renders)
    - [Fix slow render before fixing slow re-render](https://kentcdodds.com/blog/fix-the-slow-render-before-you-fix-the-re-render)
+
 6. Testing
 
    - Avoid using test hooks to reuse logics ([Ken C.
